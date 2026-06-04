@@ -25,4 +25,5 @@ void	init_traceroute(t_traceroute *trace)
 	trace->timeout = 1;
 	trace->port = 33434;
 	trace->pid = getpid();
+	trace->hostname = NULL;
 }

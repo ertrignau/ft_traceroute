@@ -17,7 +17,7 @@ int main(int ac, char *av[])
 	int host_idx;
 	if (ac < 2)
 	{
-		printf("Wrong number of arguments");
+		fprintf(stderr, "Usage: %s <destination> [options]\n", av[0]);
 		return (-1);
 	}
 	t_traceroute trace;

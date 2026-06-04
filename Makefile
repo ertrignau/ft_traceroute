@@ -26,12 +26,12 @@ RESET		= \033[0m
 all: header $(NAME)
 
 header:
-	@echo "$(CYAN)"
-	@echo "  _____ _     _____                                         _       "
-	@echo " |  ___| |_  |_   _| __ __ _  ___ ___ _ __ ___  _   _| |_ ___  "
-	@echo " | |_  | __|   | || '__/ _\` |/ __/ _ \\ '__/ _ \\| | | | __/ _ \\ "
-	@echo " |  _| | |_    | || | | (_| | (_|  __/ | | (_) | |_| | ||  __/ "
-	@echo " |_|    \\__|   |_||_|  \\__,_|\\___\\___|_|  \\___/ \\__,_|\\__\\___| "
+	@echo "$(GREEN)"
+	@echo "╔═════════════════════════════════════════════════════════════╗"
+	@echo "║                                                             ║"
+	@echo "║           🚀 FT_TRACEROUTE - COMPILATION START 🚀           ║"
+	@echo "║                                                             ║"
+	@echo "╚═════════════════════════════════════════════════════════════╝"
 	@echo "$(RESET)"
 
 $(NAME): $(OBJS)
@@ -44,12 +44,12 @@ $(OBJ_DIR)%.o: %.c
 	@mkdir -p $(dir $@)
 	$(eval CURRENT := $(shell echo $$(($(CURRENT) + 1))))
 	$(eval PERCENT := $(shell echo $$(($(CURRENT) * 100 / $(TOTAL)))))
-	$(eval FILLED := $(shell echo $$(($(CURRENT) * 20 / $(TOTAL)))))
-	$(eval EMPTY := $(shell echo $$((20 - $(FILLED)))))
-	@printf "$(YELLOW)⚙️  Compiling $(RESET)%-30s $(CYAN)[" "$<"
-	@printf "$(GREEN)%0.s█$(RESET)" $(shell seq 1 $(FILLED)) 2>/dev/null || true
-	@printf "$(RED)%0.s░$(RESET)" $(shell seq 1 $(EMPTY)) 2>/dev/null || true
-	@printf "$(CYAN)] $(YELLOW)%3d%%$(RESET)\n" $(PERCENT)
+	$(eval FILLED := $(shell echo $$(($(CURRENT) * 30 / $(TOTAL)))))
+	$(eval EMPTY := $(shell echo $$((30 - $(FILLED)))))
+	@printf "$(GREEN)█$(RESET) Compilation: $(CYAN)["
+	@printf "$(GREEN)%0.s▓$(RESET)" $(shell seq 1 $(FILLED)) 2>/dev/null || true
+	@printf "$(YELLOW)%0.s░$(RESET)" $(shell seq 1 $(EMPTY)) 2>/dev/null || true
+	@printf "$(CYAN)] $(GREEN)%3d%%$(RESET)\n" $(PERCENT)
 	@$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 
 clean:

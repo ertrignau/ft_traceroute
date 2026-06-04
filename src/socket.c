@@ -18,7 +18,7 @@ int	create_recv_socket(void)
 	sockfd = socket(AF_INET, SOCK_RAW, IPPROTO_ICMP);
 	if (sockfd < 0)
 	{
-		fprintf(stderr, "socket recv: %s\n", strerror(errno));
+		fprintf(stderr, "You must run as root to create raw socket\n");
 		return (-1);
 	}
 	return (sockfd);

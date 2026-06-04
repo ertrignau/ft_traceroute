@@ -31,7 +31,7 @@ typedef struct s_traceroute
 {
 	int						send_fd;
 	int						recv_fd;
-	
+	char					*hostname;
 	struct	sockaddr_in		dest;
 	
 	int						ttl;
