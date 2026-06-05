@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   traceroute.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: eric <eric@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: ertrigna <ertrigna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/03 16:09:51 by eric              #+#    #+#             */
-/*   Updated: 2026/03/06 13:53:14 by eric             ###   ########.fr       */
+/*   Updated: 2026/06/05 11:55:47 by ertrigna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,6 +96,8 @@ void	run_traceroute(t_traceroute *trace)
 			}
 			probe++;
 		}
+		if (trace->json_output == 1)
+			output_hop_data(trace, trace->ttl, first_addr.sin_addr.s_addr?, ...);
 		printf("\n");
 		trace->ttl++;
 	}

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Traceroute 3D Visualizer</title>
+    <style>
+        * { margin: 0; padding: 0; }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #001a4d 0%, #000033 100%);
+            color: #fff;
+        }
+        #canvas { display: block; }
+        #info {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 3px solid #00ff88;
+            font-family: monospace;
+            max-width: 400px;
+        }
+        #info h2 { color: #00ff88; margin-bottom: 10px; }
+        #info p { margin: 5px 0; font-size: 12px; }
+        #stats {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-family: monospace;
+        }
+        .hop-info { margin: 8px 0; padding: 5px; background: rgba(0, 255, 136, 0.1); border-radius: 3px; }
+        .timeout { color: #ff6b6b; }
+        .hop-addr { color: #00ff88; }
+    </style>
+</head>
+<body>
+    <div id="info">
+        <h2>Traceroute 3D</h2>
+        <div id="trace-info"></div>
+    </div>
+    <div id="stats">
+        <p>Hops: <span id="hop-count">0</span></p>
+        <p>Avg RTT: <span id="avg-rtt">0</span>ms</p>
+        <p>Controls: Mouse drag to rotate | Scroll to zoom</p>
+    </div>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="viewer.js"></script>
+</body>
+</html>

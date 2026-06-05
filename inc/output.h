@@ -1,30 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   init.c                                             :+:      :+:    :+:   */
+/*   output.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ertrigna <ertrigna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/03/03 15:45:54 by eric              #+#    #+#             */
-/*   Updated: 2026/06/05 11:13:47 by ertrigna         ###   ########.fr       */
+/*   Created: 2026/06/05 11:40:55 by ertrigna          #+#    #+#             */
+/*   Updated: 2026/06/05 11:44:19 by ertrigna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "traceroute.h"
+#ifndef OUTPUT_H
+#define OUTPUT_H
 
-void	init_traceroute(t_traceroute *trace)
+typedef struct s_hop
 {
-	ft_memset(trace, 0, sizeof(t_traceroute)); // init a 0 dest, start et end
-	
-	trace->send_fd = -1;
-	trace->recv_fd = -1;
-	trace->ttl = 1;
-	trace->max_ttl = 30;
-	trace->probes_per_ttl = 3;
-	trace->sequence = 0;
-	trace->timeout = 1;
-	trace->port = 33434;
-	trace->pid = getpid();
-	trace->hostname = NULL;
-	trace->json_output = 0;
-}
+	int		ttl;
+	char	ip[INET_ADDRSTRLEN];
+	char	hostname[256];
+	double	rtt[3];  // 3 probes
+	int		is_timeout;
+} t_hop;
+
+void	print_hop_json(t_hop *hop);
+
+#endif

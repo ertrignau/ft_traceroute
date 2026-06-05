@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   traceroute.h                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: eric <eric@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: ertrigna <ertrigna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/03 16:11:50 by eric              #+#    #+#             */
-/*   Updated: 2026/03/06 13:52:23 by eric             ###   ########.fr       */
+/*   Updated: 2026/06/05 11:43:50 by ertrigna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,8 @@
 #include <netinet/ip_icmp.h>
 #include <arpa/inet.h>
 
+#include "output.h"
+
 typedef struct s_traceroute
 {
 	int						send_fd;
@@ -43,6 +45,8 @@ typedef struct s_traceroute
 	int						timeout;
 	int						no_dns;
 	int						port;
+
+	int						json_output;
 	
 	struct timeval			start;
 	struct timeval			end;
