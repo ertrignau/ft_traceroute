@@ -6,7 +6,7 @@
 /*   By: ertrigna <ertrigna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/05 11:50:04 by ertrigna          #+#    #+#             */
-/*   Updated: 2026/06/05 11:50:07 by ertrigna         ###   ########.fr       */
+/*   Updated: 2026/06/05 15:46:15 by ertrigna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -187,7 +187,7 @@ function handleKeyDown(e) {
 }
 
 document.addEventListener('keydown', handleKeyDown);
-window.addEventListener('keydown', handleKeyDown);
+// window.addEventListener('keydown', handleKeyDown);
 
 function clearTraceScene() {
     scene.remove(traceGroup);
