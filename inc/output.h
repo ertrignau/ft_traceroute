@@ -13,6 +13,8 @@
 #ifndef OUTPUT_H
 #define OUTPUT_H
 
+typedef struct s_traceroute t_traceroute;
+
 typedef struct s_hop
 {
 	int		ttl;
@@ -23,5 +25,6 @@ typedef struct s_hop
 } t_hop;
 
 void	print_hop_json(t_hop *hop);
+void	output_hop_data(t_traceroute *trace, int ttl, char *ip, char *hostname, double rtt1, double rtt2, double rtt3, int is_timeout);
 
 #endif

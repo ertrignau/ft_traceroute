@@ -78,4 +78,7 @@ void	print_hop(struct sockaddr_in *recv_addr, t_traceroute *trace);
 void	print_timeout(void);
 void	run_traceroute(t_traceroute *trace);
 
+/*OUTPUT*/
+void	output_hop_data(t_traceroute *trace, int ttl, char *ip, char *hostname, double rtt1, double rtt2, double rtt3, int is_timeout);
+
 #endif

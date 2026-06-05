@@ -15,13 +15,18 @@ const fs = require('fs');
 const readline = require('readline');
 
 const app = express();
-app.use(express.static('public'));
+const path = require('path');
+app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
 
+const PORT = Number(process.env.PORT) || 3000;
+const INPUT_MODE = process.argv[2] === '--input';
+
 let tracerouteData = [];
+let useExistingServer = false;
 
 // Mode: lire depuis stdin (pipe du traceroute)
-if (process.argv[2] === '--input') {
+if (INPUT_MODE) {
     const rl = readline.createInterface({
         input: process.stdin,
         output: process.stdout
@@ -37,8 +42,30 @@ if (process.argv[2] === '--input') {
         }
     });
 
-    rl.on('close', () => {
-        console.log('✓ Trace complete! Open http://localhost:3000');
+    rl.on('close', async () => {
+        if (useExistingServer) {
+            try {
+                const response = await fetch(`http://localhost:${PORT}/api/trace`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(tracerouteData)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+
+                console.log(`✓ Trace sent to http://localhost:${PORT}`);
+            } catch (error) {
+                console.error(`Failed to send trace to http://localhost:${PORT}: ${error.message}`);
+                process.exitCode = 1;
+            }
+            return;
+        }
+
+        console.log(`✓ Trace complete! Open http://localhost:${PORT}`);
     });
 }
 
@@ -52,10 +79,25 @@ app.post('/api/trace', (req, res) => {
     res.json({ success: true, count: tracerouteData.length });
 });
 
-const PORT = 3000;
-app.listen(PORT, () => {
-    console.log(`Visualizer running on http://localhost:${PORT}`);
-    if (process.argv[2] === '--input') {
+const server = app.listen(PORT, () => {
+    if (INPUT_MODE) {
         console.log('Reading traceroute data from stdin...');
+    } else {
+        console.log(`Visualizer running on http://localhost:${PORT}`);
     }
+});
+
+server.on('error', (error) => {
+    if (error.code === 'EADDRINUSE') {
+        if (INPUT_MODE) {
+            useExistingServer = true;
+            console.log(`Port ${PORT} is already in use. Reusing the existing visualizer.`);
+            return;
+        }
+
+        console.error(`Port ${PORT} is already in use. Stop the existing visualizer or run with PORT=<free-port>.`);
+        process.exit(1);
+    }
+
+    throw error;
 });

@@ -5,11 +5,12 @@ CFLAGS		= -Wall -Wextra -Werror
 INCLUDES	= -I inc/
 OBJ_DIR		= obj/
 
-SRCS		= main.c \
+SRCS		= src/main.c \
 		  src/init.c \
 		  src/parsing.c \
 		  src/socket.c \
 		  src/traceroute.c \
+		  src/output.c \
 		  src/utils.c
 
 OBJS		= $(addprefix $(OBJ_DIR), $(SRCS:.c=.o))
@@ -29,7 +30,7 @@ header:
 	@echo "$(GREEN)"
 	@echo "╔═════════════════════════════════════════════════════════════╗"
 	@echo "║                                                             ║"
-	@echo "║           🚀 FT_TRACEROUTE - COMPILATION START 🚀           ║"
+	@echo "║                      FT_TRACEROUTE                          ║"
 	@echo "║                                                             ║"
 	@echo "╚═════════════════════════════════════════════════════════════╝"
 	@echo "$(RESET)"
