@@ -4,50 +4,143 @@
     <meta charset="UTF-8">
     <title>Traceroute 3D Visualizer</title>
     <style>
-        * { margin: 0; padding: 0; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #001a4d 0%, #000033 100%);
+            background:
+                radial-gradient(circle at top, rgba(0, 255, 136, 0.16), transparent 30%),
+                linear-gradient(135deg, #001a4d 0%, #000033 100%);
             color: #fff;
+            overflow: hidden;
         }
         #canvas { display: block; }
         #info {
             position: fixed;
             top: 20px;
             left: 20px;
-            background: rgba(0, 0, 0, 0.8);
-            padding: 20px;
-            border-radius: 8px;
-            border-left: 3px solid #00ff88;
+            background: rgba(5, 12, 24, 0.82);
+            backdrop-filter: blur(10px);
+            padding: 18px 18px 14px;
+            border-radius: 16px;
+            border: 1px solid rgba(0, 255, 136, 0.22);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
             font-family: monospace;
-            max-width: 400px;
+            max-width: 440px;
+            z-index: 3;
         }
-        #info h2 { color: #00ff88; margin-bottom: 10px; }
-        #info p { margin: 5px 0; font-size: 12px; }
+        #info h2 { color: #00ff88; margin-bottom: 8px; font-size: 20px; }
+        #info p { margin: 5px 0; font-size: 12px; line-height: 1.45; }
+        #trace-info { margin-top: 12px; }
+        .legend {
+            margin-top: 14px;
+            padding-top: 12px;
+            border-top: 1px solid rgba(255, 255, 255, 0.12);
+        }
+        .legend-title {
+            color: #cde9ff;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            margin-bottom: 10px;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 8px 0;
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 12px;
+        }
+        .legend-swatch {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            flex: 0 0 14px;
+            box-shadow: 0 0 14px rgba(255, 255, 255, 0.25);
+        }
+        .legend-line {
+            width: 14px;
+            height: 3px;
+            border-radius: 99px;
+            flex: 0 0 14px;
+        }
         #stats {
             position: fixed;
             bottom: 20px;
             right: 20px;
-            background: rgba(0, 0, 0, 0.8);
-            padding: 15px;
-            border-radius: 8px;
+            background: rgba(5, 12, 24, 0.82);
+            backdrop-filter: blur(10px);
+            padding: 14px 16px;
+            border-radius: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
             font-size: 12px;
             font-family: monospace;
+            z-index: 3;
         }
-        .hop-info { margin: 8px 0; padding: 5px; background: rgba(0, 255, 136, 0.1); border-radius: 3px; }
+        #label-layer {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 2;
+        }
+        .route-label {
+            position: absolute;
+            transform: translate(-50%, -50%);
+            padding: 6px 10px;
+            border-radius: 999px;
+            background: rgba(8, 18, 32, 0.92);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: #fff;
+            font-size: 11px;
+            white-space: nowrap;
+            opacity: 0;
+            transition: opacity 0.2s ease, transform 0.2s ease;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+        }
+        .route-label.visible {
+            opacity: 1;
+            transform: translate(-50%, -62%);
+        }
+        .route-label.active {
+            border-color: rgba(0, 255, 136, 0.5);
+            color: #00ff88;
+        }
+        .hop-info { margin: 8px 0; padding: 8px 10px; background: rgba(0, 255, 136, 0.1); border-radius: 8px; }
         .timeout { color: #ff6b6b; }
         .hop-addr { color: #00ff88; }
+        .hop-name { color: #cde9ff; }
+        .hint { color: rgba(255, 255, 255, 0.65); }
+        .metric-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 8px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.08);
+            margin-top: 8px;
+            font-size: 11px;
+        }
     </style>
 </head>
 <body>
     <div id="info">
         <h2>Traceroute 3D</h2>
         <div id="trace-info"></div>
+        <div class="legend">
+            <div class="legend-title">Légende</div>
+            <div class="legend-item"><span class="legend-swatch" style="background:#00ff88"></span> RTT rapide</div>
+            <div class="legend-item"><span class="legend-swatch" style="background:#ffd166"></span> RTT moyen</div>
+            <div class="legend-item"><span class="legend-swatch" style="background:#ff6b6b"></span> Timeout / point non répondu</div>
+            <div class="legend-item"><span class="legend-line" style="background:#00ff88"></span> Liaison entre les hops</div>
+        </div>
     </div>
+    <div id="label-layer"></div>
     <div id="stats">
         <p>Hops: <span id="hop-count">0</span></p>
         <p>Avg RTT: <span id="avg-rtt">0</span>ms</p>
-        <p>Controls: Mouse drag to rotate | Scroll to zoom</p>
+        <p>Controls: Mouse drag to rotate | Scroll to zoom at cursor</p>
+        <p class="hint">Zoom in or hover a node to reveal the router name. Press Tab to keep only the bubbles. Use the arrow keys to move between hops.</p>
     </div>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
