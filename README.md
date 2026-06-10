@@ -94,6 +94,7 @@ make re
 
 ```bash
 sudo ./ft_traceroute <destination>
+sudo ./ft_traceroute -j <destination> | node visualiseur/server.js --input
 ```
 
 Exemples :
@@ -123,7 +124,7 @@ Installation :
 
 ```bash
 cd visualiseur
-npm install
+npm install &
 ```
 
 Lancement :
