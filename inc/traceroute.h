@@ -45,6 +45,7 @@ typedef struct s_traceroute
 	int						timeout;
 	int						no_dns;
 	int						port;
+	int						packet_size;
 
 	int						json_output;
 	

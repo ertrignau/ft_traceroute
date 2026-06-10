@@ -22,6 +22,7 @@ void	init_traceroute(t_traceroute *trace)
 	trace->max_ttl = 30;
 	trace->probes_per_ttl = 3;
 	trace->sequence = 0;
+	trace->packet_size = 60;
 	trace->timeout = 1;
 	trace->port = 33434;
 	trace->pid = getpid();

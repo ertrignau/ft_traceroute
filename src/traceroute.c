@@ -77,7 +77,11 @@ void	run_traceroute(t_traceroute *trace)
 
     done = 0;
     if (!trace->json_output)
-        printf("traceroute to %s, %d hops max\n", inet_ntoa(trace->dest.sin_addr), trace->max_ttl);
+        printf("traceroute to %s (%s), %d hops max, %d byte packets\n",
+       trace->hostname,
+       inet_ntoa(trace->dest.sin_addr),
+       trace->max_ttl,
+       trace->packet_size);
     while (trace->ttl <= trace->max_ttl && !done)
     {
         probe = 0;

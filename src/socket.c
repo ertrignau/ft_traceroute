@@ -46,6 +46,7 @@ int	resolve_host(t_traceroute* trace, char *hostname)
 	hints.ai_family = AF_INET;
 	hints.ai_socktype = SOCK_DGRAM;
 
+	trace->hostname = hostname;
 	ret = getaddrinfo(hostname, NULL, &hints, &res);
 	if (ret != 0)
 	{
