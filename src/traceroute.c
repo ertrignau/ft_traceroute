@@ -39,21 +39,29 @@ int	wait_response(t_traceroute *trace, struct sockaddr_in *recv_addr, char *buf)
     return (parse_icmp(buf));
 }
 
-void	print_hop(struct sockaddr_in *recv_addr, t_traceroute *trace)
+void print_hop(struct sockaddr_in *recv_addr, t_traceroute *trace)
 {
-    char	host[NI_MAXHOST];
-    double	rtt;
+    char host[NI_MAXHOST];
+    char *ip;
+    double rtt;
 
     if (trace->json_output)
         return;
+
     rtt = calc_rtt(trace);
+    ip = inet_ntoa(recv_addr->sin_addr);
     if (trace->no_dns)
-        printf("%s  %.3f ms  ", inet_ntoa(recv_addr->sin_addr), rtt);
-    else
     {
-        getnameinfo((struct sockaddr *)recv_addr, sizeof(*recv_addr), host, sizeof(host), NULL, 0, 0);
-        printf("%s (%s)  %.3f ms  ", host, inet_ntoa(recv_addr->sin_addr), rtt);
+        printf("%s  %.3f ms  ", ip, rtt);
+        return;
     }
+    if (getnameinfo((struct sockaddr *)recv_addr,
+                    sizeof(*recv_addr),
+                    host, sizeof(host),
+                    NULL, 0, 0) != 0)
+        strcpy(host, ip);
+
+    printf("%s (%s)  %.3f ms  ", host, ip, rtt);
 }
 
 void	print_timeout(void)

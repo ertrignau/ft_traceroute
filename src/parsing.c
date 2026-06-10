@@ -44,7 +44,7 @@ int parse_args(int ac, char *av[], t_traceroute *trace)
 			trace->probes_per_ttl = ft_atoi(av[++i]);
 		else if (strcmp(av[i], "-w") == 0 && i + 1 <  ac)	// -> flag bonus timeout
 			trace->timeout = ft_atoi(av[++i]);
-		else if (strcmp(av[i], "-n") == 0 && i + 1 < ac)	// -> flag bonus dns 
+		else if (strcmp(av[i], "-n") == 0)	// -> flag bonus dns 
 			trace->no_dns = 1;
 		else if (strcmp(av[i], "-p") == 0 && i + 1 < ac)	// -> flag bonus choix port
 			trace->port = ft_atoi(av[++i]);
