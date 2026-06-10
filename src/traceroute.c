@@ -144,7 +144,7 @@ void	run_traceroute(t_traceroute *trace)
             ft_memset(hostname, 0, sizeof(hostname));
             if (first_printed)
             {
-                strcpy(ip_str, inet_ntoa(first_addr.sin_addr));
+                ft_strcpy(ip_str, inet_ntoa(first_addr.sin_addr));
                 getnameinfo((struct sockaddr *)&first_addr, sizeof(first_addr), hostname, sizeof(hostname), NULL, 0, 0);
             }
             output_hop_data(trace, trace->ttl, ip_str, hostname, rtt1, rtt2, rtt3, (timeout_count == trace->probes_per_ttl));

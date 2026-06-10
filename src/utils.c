@@ -26,6 +26,30 @@ void	*ft_memset(void *ptr, int value, size_t len)
 	return (ptr);
 }
 
+int	ft_strcmp(const char *s1, const char *s2)
+{
+	size_t i;
+	
+	i= 0;
+	while (s1[i] && s2[i] && s1[i] == s2[i])
+		i++;
+	return ((unsigned char)s1[i] - (unsigned char)s2[i]);
+}
+
+char	*ft_strcpy(char *dest, const char *src)
+{
+	size_t i;
+
+	i = 0;
+	while (src[i])
+	{
+		dest[i] = src[i];
+		i++;
+	}
+	dest[i] = '\0';
+	return (dest);
+}
+
 double	calc_rtt(t_traceroute *trace)
 {
 	return ((trace->end.tv_sec - trace->start.tv_sec) * 1000.0 + (trace->end.tv_usec - trace->start.tv_usec) / 1000.0);
@@ -63,6 +87,6 @@ void	print_usage(char *str)
 	fprintf(stderr, "	-m max_ttl		Max number of hops (default: 30)\n");
 	fprintf(stderr, "	-q nqueries		Number of probes per hop (default: 3)\n");
 	fprintf(stderr, "	-w timeout		Timeout in seconds (default: 3)\n");
-	fprintf(stderr, "	-n				No DNS resolution\n");
+	fprintf(stderr, "	-n			No DNS resolution\n");
 	fprintf(stderr, "	--help			Show this help\n");
 }

@@ -57,6 +57,8 @@ typedef struct s_traceroute
 /*UTILS*/
 void	*ft_memset(void *ptr, int value, size_t len);
 int		ft_atoi(const char *str);
+int		ft_strcmp(const char *s1, const char *s2);
+char	*ft_strcpy(char *dest, const char *src);
 double	calc_rtt(t_traceroute *trace);
 void	print_usage(char *str);
 
