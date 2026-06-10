@@ -1,66 +1,97 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    Makefile                                           :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: ertrigna <ertrigna@student.42.fr>          +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2026/06/05                                  #+#    #+#              #
+#    Updated: 2026/06/05                                  ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
 NAME		= ft_traceroute
 
-CC		= gcc
-CFLAGS		= -Wall -Wextra -Werror
-INCLUDES	= -I inc/
-OBJ_DIR		= obj/
+CC			= gcc
+CFLAGS		= -Wall -Wextra -Werror -g
+INCLUDES	= -I inc
 
-SRCS		= src/main.c \
-		  src/init.c \
-		  src/parsing.c \
-		  src/socket.c \
-		  src/traceroute.c \
-		  src/output.c \
-		  src/utils.c
+SRCS_DIR	= src
+OBJ_DIR		= obj
 
-OBJS		= $(addprefix $(OBJ_DIR), $(SRCS:.c=.o))
-TOTAL		= $(words $(SRCS))
+SRCS		= $(SRCS_DIR)/main.c \
+			  $(SRCS_DIR)/init.c \
+			  $(SRCS_DIR)/parsing.c \
+			  $(SRCS_DIR)/socket.c \
+			  $(SRCS_DIR)/traceroute.c \
+			  $(SRCS_DIR)/output.c \
+			  $(SRCS_DIR)/utils.c
+
+OBJS		= $(addprefix $(OBJ_DIR)/,$(notdir $(SRCS:.c=.o)))
 
 # Colors
-RED		= \033[1;31m
-GREEN		= \033[1;32m
-YELLOW		= \033[1;33m
-BLUE		= \033[1;34m
-CYAN		= \033[1;36m
-RESET		= \033[0m
+GREEN	= \033[1;32m
+YELLOW	= \033[1;33m
+BLUE	= \033[1;34m
+CYAN	= \033[1;36m
+RESET	= \033[0m
 
-all: header $(NAME)
+# ===================== ALL =====================
 
-header:
-	@echo "$(GREEN)"
-	@echo "╔═════════════════════════════════════════════════════════════╗"
-	@echo "║                                                             ║"
-	@echo "║                      FT_TRACEROUTE                          ║"
-	@echo "║                                                             ║"
-	@echo "╚═════════════════════════════════════════════════════════════╝"
-	@echo "$(RESET)"
+all: $(NAME)
 
-$(NAME): $(OBJS)
-	@printf "$(BLUE)🔗 Linking...$(RESET)\n"
+# ===================== BANNER =====================
+
+banner:
+	@printf "$(GREEN)"
+	@printf "╔══════════════════════════════════════════════════════════════╗\n"
+	@printf "║                                                              ║\n"
+	@printf "║                      FT_TRACEROUTE                           ║\n"
+	@printf "║              Network diagnostic tool (ICMP)                  ║\n"
+	@printf "║                                                              ║\n"
+	@printf "╚══════════════════════════════════════════════════════════════╝\n"
+	@printf "$(RESET)\n"
+
+# ===================== BUILD =====================
+
+$(NAME): banner $(OBJ_DIR) $(OBJS)
+	@printf "\n$(BLUE)⏳ Linking binary...$(RESET)\n"
+	@i=0; \
+	total=$(words $(SRCS)); \
+	for f in $(OBJS); do \
+		i=$$((i+1)); \
+		bar=$$((i * 30 / total)); \
+		printf "\r$(GREEN)["; \
+		j=0; while [ $$j -lt $$bar ]; do printf "█"; j=$$((j+1)); done; \
+		j=$$bar; while [ $$j -lt 30 ]; do printf "░"; j=$$((j+1)); done; \
+		printf "] %3d%%" $$((i * 100 / total)); \
+	done; \
+	echo ""
+
 	@$(CC) $(CFLAGS) $(OBJS) -o $(NAME)
-	@echo "$(GREEN)✅ $(NAME) compiled successfully!$(RESET)"
+	@echo "$(GREEN)\n✅ $(NAME) compiled successfully$(RESET)"
+	@echo "Usage: sudo ./$(NAME) <destination>\n"
 
-CURRENT = 0
-$(OBJ_DIR)%.o: %.c
-	@mkdir -p $(dir $@)
-	$(eval CURRENT := $(shell echo $$(($(CURRENT) + 1))))
-	$(eval PERCENT := $(shell echo $$(($(CURRENT) * 100 / $(TOTAL)))))
-	$(eval FILLED := $(shell echo $$(($(CURRENT) * 30 / $(TOTAL)))))
-	$(eval EMPTY := $(shell echo $$((30 - $(FILLED)))))
-	@printf "$(GREEN)█$(RESET) Compilation: $(CYAN)["
-	@printf "$(GREEN)%0.s▓$(RESET)" $(shell seq 1 $(FILLED)) 2>/dev/null || true
-	@printf "$(YELLOW)%0.s░$(RESET)" $(shell seq 1 $(EMPTY)) 2>/dev/null || true
-	@printf "$(CYAN)] $(GREEN)%3d%%$(RESET)\n" $(PERCENT)
+# ===================== COMPILATION =====================
+
+$(OBJ_DIR):
+	@mkdir -p $(OBJ_DIR)
+
+$(OBJ_DIR)/%.o: $(SRCS_DIR)/%.c
+	@mkdir -p $(OBJ_DIR)
+	@printf "$(CYAN)🔨 Compiling %-20s$(RESET)\r" "$<"
 	@$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
+
+# ===================== CLEAN =====================
 
 clean:
 	@rm -rf $(OBJ_DIR)
-	@echo "$(YELLOW)🧹 Objects cleaned!$(RESET)"
+	@echo "$(YELLOW)🧹 Objects cleaned$(RESET)"
 
 fclean: clean
 	@rm -f $(NAME)
-	@echo "$(RED)🧹 $(NAME) removed!$(RESET)"
+	@echo "$(YELLOW)🧹 Binary removed$(RESET)"
 
 re: fclean all
 
-.PHONY: all clean fclean re header
+.PHONY: all clean fclean re banner
